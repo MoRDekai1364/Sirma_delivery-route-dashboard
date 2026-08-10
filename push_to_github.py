@@ -38,14 +38,13 @@ def fail(message, code=1):
     logger.error(f"FAILED. Log path: {dest}")
     sys.exit(code)
 
-def print_progress(percent, prefix=""):
+def print_progress(percent, elapsed_seconds, done, total, prefix=""):
     bar_len = 30
     filled = int(bar_len * percent // 100)
     bar = "#" * filled + "." * (bar_len - filled)
-    sys.stdout.write(f"\r{prefix}[{bar}] {percent}%")
+    counts = f" {done}/{total}" if total else ""
+    sys.stdout.write(f"\r{prefix}[{bar}] {percent}%{counts} | {elapsed_seconds:.0f}s elapsed   ")
     sys.stdout.flush()
-    if percent >= 100:
-        sys.stdout.write("\n")
 
 def run(cmd, cwd=SOURCE_DIR, check=True):
     logger.debug(f"Running: {' '.join(cmd)}")
@@ -79,6 +78,10 @@ def get_remotes():
             remotes[parts[0]] = parts[1]
     return remotes
 
+def is_reachable_repo(url):
+    result = run(["git", "ls-remote", url], check=False)
+    return result.returncode == 0
+
 def select_repo():
     remotes = get_remotes()
     if remotes:
@@ -89,10 +92,22 @@ def select_repo():
         logger.info(f"  {len(names)+1}. Enter a new repository URL")
         choice = input("Select repository: ").strip()
         if choice.isdigit() and 1 <= int(choice) <= len(names):
-            return names[int(choice) - 1], remotes[names[int(choice) - 1]]
-    url = input("Enter GitHub repository URL: ").strip()
-    if not url:
-        fail("No repository URL provided.")
+            name = names[int(choice) - 1]
+            url = remotes[name]
+            logger.info("Verifying repository access.")
+            if not is_reachable_repo(url):
+                fail(f"Could not reach repository: {url}")
+            return name, url
+    while True:
+        url = input("Enter GitHub repository URL: ").strip()
+        if not url:
+            logger.info("No URL entered. Try again.")
+            continue
+        logger.info("Verifying repository access.")
+        if not is_reachable_repo(url):
+            logger.info(f"Could not reach '{url}'. Check the URL and permissions, then try again.")
+            continue
+        break
     if "origin" in remotes:
         run(["git", "remote", "set-url", "origin", url])
         return "origin", url
@@ -125,21 +140,34 @@ def select_branch(remote_name):
     local_branches = get_local_branches()
     remote_branches = get_remote_branches(remote_name)
     all_branches = sorted(set(local_branches) | set(remote_branches))
-    if all_branches:
-        logger.info("Detected branches:")
-        for i, name in enumerate(all_branches, 1):
-            logger.info(f"  {i}. {name}")
-        logger.info(f"  {len(all_branches)+1}. Enter a new branch name")
-        choice = input("Select branch: ").strip()
-        if choice.isdigit() and 1 <= int(choice) <= len(all_branches):
-            branch = all_branches[int(choice) - 1]
+    while True:
+        if all_branches:
+            logger.info("Detected branches:")
+            for i, name in enumerate(all_branches, 1):
+                logger.info(f"  {i}. {name}")
+            logger.info(f"  {len(all_branches)+1}. Enter a new branch name")
+            choice = input("Select branch: ").strip()
+            if choice.isdigit() and 1 <= int(choice) <= len(all_branches):
+                return all_branches[int(choice) - 1]
+            if choice.isdigit() and int(choice) == len(all_branches) + 1:
+                branch = input("Enter new branch name: ").strip()
+            else:
+                branch = choice
         else:
-            branch = input("Enter new branch name: ").strip()
-    else:
-        branch = input("Enter branch name: ").strip()
-    if not branch:
-        fail("No branch provided.")
-    return branch
+            branch = input("Enter branch name: ").strip()
+        if not branch or not is_valid_branch_name(branch):
+            logger.info("Invalid or empty branch name. Try again.")
+            continue
+        if branch in all_branches:
+            return branch
+        confirm = input(f"Branch '{branch}' does not exist. Create it? (y/n): ").strip().lower()
+        if confirm == "y":
+            return branch
+        logger.info("Branch creation declined. Choose again.")
+
+def is_valid_branch_name(name):
+    result = run(["git", "check-ref-format", "--branch", name], check=False)
+    return result.returncode == 0
 
 def checkout_branch(branch):
     local_branches = get_local_branches()
@@ -160,21 +188,38 @@ def stage_and_commit(message):
 def push_with_progress(remote_name, branch):
     cmd = ["git", "push", "-u", remote_name, branch, "--progress"]
     logger.debug(f"Running: {' '.join(cmd)}")
+    start_time = datetime.now()
     process = subprocess.Popen(cmd, cwd=SOURCE_DIR, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, bufsize=1)
     last_percent = 0
+    last_done = 0
+    last_total = 0
     for line in process.stdout:
         logger.debug(line.strip())
-        match = re.search(r"(\d{1,3})%", line)
+        elapsed = (datetime.now() - start_time).total_seconds()
+        match = re.search(r"(\d{1,3})%\s*\((\d+)/(\d+)\)", line)
         if match:
             percent = min(100, int(match.group(1)))
+            done = int(match.group(2))
+            total = int(match.group(3))
             if percent >= last_percent:
-                print_progress(percent, prefix="Pushing: ")
+                print_progress(percent, elapsed, done, total, prefix="Pushing: ")
+                last_percent = percent
+                last_done = done
+                last_total = total
+        elif re.search(r"\d{1,3}%", line):
+            match2 = re.search(r"(\d{1,3})%", line)
+            percent = min(100, int(match2.group(1)))
+            if percent >= last_percent:
+                print_progress(percent, elapsed, last_done, last_total, prefix="Pushing: ")
                 last_percent = percent
     process.wait()
+    total_elapsed = (datetime.now() - start_time).total_seconds()
     if last_percent < 100:
-        print_progress(100, prefix="Pushing: ")
+        print_progress(100, total_elapsed, last_total, last_total, prefix="Pushing: ")
+    sys.stdout.write("\n")
     if process.returncode != 0:
         raise RuntimeError(f"git push exited with code {process.returncode}")
+    logger.info(f"Push finished in {total_elapsed:.1f}s. Done.")
 
 def main():
     logger.info(f"Source folder: {SOURCE_DIR}")
