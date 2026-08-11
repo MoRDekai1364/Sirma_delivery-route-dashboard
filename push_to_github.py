@@ -193,7 +193,10 @@ def push_with_progress(remote_name, branch):
     last_percent = 0
     last_done = 0
     last_total = 0
-    for line in process.stdout:
+    buffer = ""
+
+    def process_line(line):
+        nonlocal last_percent, last_done, last_total
         logger.debug(line.strip())
         elapsed = (datetime.now() - start_time).total_seconds()
         match = re.search(r"(\d{1,3})%\s*\((\d+)/(\d+)\)", line)
@@ -212,6 +215,21 @@ def push_with_progress(remote_name, branch):
             if percent >= last_percent:
                 print_progress(percent, elapsed, last_done, last_total, prefix="Pushing: ")
                 last_percent = percent
+
+    while True:
+        char = process.stdout.read(1)
+        if not char:
+            break
+        if char in ("\r", "\n"):
+            if buffer.strip():
+                process_line(buffer)
+            buffer = ""
+        else:
+            buffer += char
+
+    if buffer.strip():
+        process_line(buffer)
+
     process.wait()
     total_elapsed = (datetime.now() - start_time).total_seconds()
     if last_percent < 100:
@@ -243,3 +261,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    input("\nPress Enter to close...")
