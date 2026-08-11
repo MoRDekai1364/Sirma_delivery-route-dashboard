@@ -1,7 +1,10 @@
 import React, { useState } from "react";
+import MapView from "./components/MapView/MapView.jsx";
 
 function App() {
   const [routes, setRoutes] = useState([]);
+  const [vehicles, setVehicles] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -9,12 +12,23 @@ function App() {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("/api/routes/plan", { method: "POST" });
-      if (!response.ok) {
-        throw new Error(`Plan request failed: ${response.status}`);
-      }
-      const data = await response.json();
-      setRoutes(data);
+      const [planRes, vehiclesRes, ordersRes] = await Promise.all([
+        fetch("/api/routes/plan", { method: "POST" }),
+        fetch("/api/vehicles/"),
+        fetch("/api/orders/"),
+      ]);
+
+      if (!planRes.ok) throw new Error(`Plan request failed: ${planRes.status}`);
+      if (!vehiclesRes.ok) throw new Error(`Vehicles request failed: ${vehiclesRes.status}`);
+      if (!ordersRes.ok) throw new Error(`Orders request failed: ${ordersRes.status}`);
+
+      const planData = await planRes.json();
+      const vehiclesData = await vehiclesRes.json();
+      const ordersData = await ordersRes.json();
+
+      setRoutes(planData);
+      setVehicles(vehiclesData);
+      setOrders(ordersData);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -33,10 +47,7 @@ function App() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <div style={{ marginTop: "24px" }}>
-        {/* MapView placeholder */}
-        <div style={{ border: "1px solid #ccc", minHeight: "400px", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {routes.length > 0 ? `${routes.length} routes planned` : "No routes yet"}
-        </div>
+        <MapView routes={routes} vehicles={vehicles} orders={orders} />
       </div>
 
       <div style={{ marginTop: "24px" }}>

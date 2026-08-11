@@ -56,6 +56,8 @@ try {
         if (Test-Path $packageJson) {
             Write-Status "Starting frontend dev server"
             Start-Process powershell -ArgumentList "-NoExit", "-Command", "cd '$FrontendDir'; npm run dev"
+            Start-Sleep -Seconds 3
+            Start-Process "http://localhost:5173"
         } else {
             Write-Status "Frontend not scaffolded yet (no package.json), skipping" "WARN"
         }

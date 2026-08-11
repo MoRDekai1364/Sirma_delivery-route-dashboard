@@ -11,6 +11,7 @@ import models
 ORDER_COUNT = 40
 VEHICLE_COUNT = 4
 MAP_SIZE = 100
+GRID_STEP = 10
 
 log_temp_path = os.path.join(tempfile.gettempdir(), f"seed_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
 logging.basicConfig(
@@ -49,8 +50,8 @@ def seed_orders(db, count):
     try:
         for i in range(count):
             order = models.Order(
-                x=round(random.uniform(0, MAP_SIZE), 2),
-                y=round(random.uniform(0, MAP_SIZE), 2),
+                x=random.randint(0, MAP_SIZE // GRID_STEP) * GRID_STEP,
+                y=random.randint(0, MAP_SIZE // GRID_STEP) * GRID_STEP,
                 volume=round(random.uniform(1, 20), 2),
                 status="pending",
             )
@@ -74,8 +75,8 @@ def seed_vehicles(db, count):
             vehicle = models.Vehicle(
                 name=f"Vehicle-{i + 1}",
                 capacity=round(random.uniform(50, 150), 2),
-                depot_x=round(random.uniform(0, MAP_SIZE), 2),
-                depot_y=round(random.uniform(0, MAP_SIZE), 2),
+                depot_x=random.randint(0, MAP_SIZE // GRID_STEP) * GRID_STEP,
+                depot_y=random.randint(0, MAP_SIZE // GRID_STEP) * GRID_STEP,
                 active=True,
             )
             db.add(vehicle)

@@ -253,11 +253,10 @@ def main():
             fail("No commit message provided.")
         committed = stage_and_commit(message)
         push_with_progress(remote_name, branch)
-        logger.info(f"Push complete. Remote: {remote_url} Branch: {branch} Committed: {committed}")
     except Exception as e:
         fail(f"Error: {e}")
     dest = finalize_log()
-    logger.info(f"Done. Log path: {dest}")
+    logger.info(f"Done. Remote: {remote_url} Branch: {branch} Log path: {dest}")
 
 if __name__ == "__main__":
     main()
