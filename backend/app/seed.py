@@ -11,7 +11,7 @@ import models
 ORDER_COUNT = 40
 VEHICLE_COUNT = 4
 MAP_SIZE = 100
-GRID_STEP = 10
+GRID_STEP = 20
 
 log_temp_path = os.path.join(tempfile.gettempdir(), f"seed_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log")
 logging.basicConfig(

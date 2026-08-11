@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import MapView from "./components/MapView/MapView.jsx";
+import OrderForm from "./components/OrderForm/OrderForm.jsx";
+import VehicleForm from "./components/VehicleForm/VehicleForm.jsx";
+import MetricsPanel from "./components/MetricsPanel/MetricsPanel.jsx";
 
 function App() {
   const [routes, setRoutes] = useState([]);
@@ -7,6 +10,15 @@ function App() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const refreshData = async () => {
+    const [vehiclesRes, ordersRes] = await Promise.all([
+      fetch("/api/vehicles/"),
+      fetch("/api/orders/"),
+    ]);
+    if (vehiclesRes.ok) setVehicles(await vehiclesRes.json());
+    if (ordersRes.ok) setOrders(await ordersRes.json());
+  };
 
   const handlePlanRoutes = async () => {
     setLoading(true);
@@ -40,6 +52,11 @@ function App() {
     <div style={{ fontFamily: "sans-serif", padding: "24px" }}>
       <h1>Delivery Route Optimization Dashboard</h1>
 
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px", marginBottom: "16px" }}>
+        <OrderForm onOrderCreated={refreshData} />
+        <VehicleForm onVehicleCreated={refreshData} />
+      </div>
+
       <button onClick={handlePlanRoutes} disabled={loading}>
         {loading ? "Planning..." : "Plan Routes"}
       </button>
@@ -51,8 +68,7 @@ function App() {
       </div>
 
       <div style={{ marginTop: "24px" }}>
-        {/* MetricsPanel placeholder */}
-        <p>Metrics panel coming soon</p>
+        <MetricsPanel routes={routes} vehicles={vehicles} orders={orders} />
       </div>
     </div>
   );

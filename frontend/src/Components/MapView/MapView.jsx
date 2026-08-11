@@ -72,6 +72,7 @@ function orthogonalPoints(points) {
 
 function MapView({ routes, vehicles, orders }) {
   const [tick, setTick] = useState(0);
+  const [darkMode, setDarkMode] = useState(false);
   const frameRef = useRef();
 
   useEffect(() => {
@@ -122,65 +123,91 @@ function MapView({ routes, vehicles, orders }) {
   const loopDuration = 8;
 
   return (
-    <svg
-      viewBox={viewBox}
-      style={{ width: "100%", height: 480, background: "#FFFFFF", borderRadius: 12 }}
-    >
-      {routes.map((route, idx) => {
-        const vehicle = vehicleById[route.vehicle_id];
-        if (!vehicle || route.stops.length === 0) return null;
+    <div>
+      <button
+        onClick={() => setDarkMode((d) => !d)}
+        style={{ marginBottom: "8px" }}
+      >
+        {darkMode ? "Light mode" : "Dark mode"}
+      </button>
+      <svg
+        viewBox={viewBox}
+        style={{
+          width: "100%",
+          height: 480,
+          background: darkMode ? "#1A1A1A" : "#FFFFFF",
+          borderRadius: 12,
+        }}
+      >
+        {routes.map((route, idx) => {
+          const vehicle = vehicleById[route.vehicle_id];
+          if (!vehicle || route.stops.length === 0) return null;
 
-        const color = VEHICLE_COLORS[idx % VEHICLE_COLORS.length];
-        const depot = { x: vehicle.depot_x, y: vehicle.depot_y };
-        const stopPoints = route.stops
-          .map((stop) => orderById[stop.order_id])
-          .filter(Boolean)
-          .map((o) => ({ x: o.x, y: o.y }));
+          const color = VEHICLE_COLORS[idx % VEHICLE_COLORS.length];
+          const depot = { x: vehicle.depot_x, y: vehicle.depot_y };
+          const stopPoints = route.stops
+            .map((stop) => orderById[stop.order_id])
+            .filter(Boolean)
+            .map((o) => ({ x: o.x, y: o.y }));
 
-        const fullPath = buildPath(depot, stopPoints);
-        const svgPath = pointsToSvgPath(fullPath);
-        const animPath = orthogonalPoints(fullPath);
+          const fullPath = buildPath(depot, stopPoints);
+          const svgPath = pointsToSvgPath(fullPath);
+          const animPath = orthogonalPoints(fullPath);
 
-        const t = (tick % loopDuration) / loopDuration;
-        const vehiclePos = positionAlongPath(animPath, t);
+          const t = (tick % loopDuration) / loopDuration;
+          const vehiclePos = positionAlongPath(animPath, t);
 
-        return (
-          <g key={route.id}>
-            <path
-              d={svgPath}
-              fill="none"
-              stroke={color.band}
-              strokeWidth={4}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={0.85}
-            />
-            <path
-              d={svgPath}
-              fill="none"
-              stroke="#FFFFFF"
-              strokeWidth={0.4}
-              strokeLinecap="round"
-              strokeDasharray="1.5 1.5"
-              opacity={0.6}
-            />
+          return (
+            <g key={route.id}>
+              <path
+                d={svgPath}
+                fill="none"
+                stroke={color.band}
+                strokeWidth={4}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity={0.85}
+              />
+              <path
+                d={svgPath}
+                fill="none"
+                stroke={darkMode ? "#1A1A1A" : "#FFFFFF"}
+                strokeWidth={0.4}
+                strokeLinecap="round"
+                strokeDasharray="1.5 1.5"
+                opacity={0.6}
+              />
 
-            <circle cx={depot.x} cy={depot.y} r={2.2} fill={color.dark} />
+              <circle cx={depot.x} cy={depot.y} r={2.2} fill={color.dark} />
 
-            {stopPoints.map((p, i) => (
-              <g key={i}>
-                <circle cx={p.x} cy={p.y} r={1.6} fill="#FFFFFF" stroke={color.dark} strokeWidth={0.6} />
-                <text x={p.x} y={p.y + 0.5} fontSize={1.6} textAnchor="middle" fill={color.dark}>
-                  {i + 1}
-                </text>
-              </g>
-            ))}
+              {stopPoints.map((p, i) => (
+                <g key={i}>
+                  <circle
+                    cx={p.x}
+                    cy={p.y}
+                    r={1.6}
+                    fill={darkMode ? "#1A1A1A" : "#FFFFFF"}
+                    stroke={color.dark}
+                    strokeWidth={0.6}
+                  />
+                  <text
+                    x={p.x}
+                    y={p.y + 0.5}
+                    fontSize={1.6}
+                    textAnchor="middle"
+                    fill={darkMode ? "#FFFFFF" : color.dark}
+                  >
+                    {i + 1}
+                  </text>
+                </g>
+              ))}
 
-            <circle cx={vehiclePos.x} cy={vehiclePos.y} r={1.4} fill={color.dark} />
-          </g>
-        );
-      })}
-    </svg>
+              <circle cx={vehiclePos.x} cy={vehiclePos.y} r={1.4} fill={color.dark} />
+            </g>
+          );
+        })}
+      </svg>
+    </div>
   );
 }
 

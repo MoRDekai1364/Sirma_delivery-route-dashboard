@@ -108,11 +108,19 @@ npm run dev
 
 - ✅ **Phase 1** — DB schema, models, CRUD API, seed data, migrations
 - ✅ **Phase 2** — Routing engine (`POST /routes/plan`)
-- 🔄 **Phase 3** — Frontend scaffolded; map visualization (fictional stylized road/stop renderer with animated vehicles) in progress
-- ⏳ **Phase 4** — Metrics panel
-- ⏳ **Phase 5 (stretch)** — Hard time windows, full autonomy mode, real-world map/routing swap
+- ✅ **Phase 3** — Frontend: MapView (grid roads, animated vehicles, dark/light toggle), OrderForm, VehicleForm
+- ✅ **Phase 4** — Metrics Panel (total distance, served/unserved/pending counts, per-vehicle load table)
+- 🔄 **Phase 5a** — Hard time-window constraints: implemented (`services/time_windows.py`), not yet exercised with real test data — seeded orders currently have no time windows set
+- ⏳ **Phase 5b** — Full autonomy mode
+- ⏳ **Phase 5c** — Real-world map/routing swap
+- 📋 **Phase 6** — City simulation layer (traffic, pedestrians, multi-city road network, dynamic events) — scoped as a **separate future project**, not part of this dashboard's deliverable
 
 ## Notes
 
 - Fleet capacity, depot location, and order volume/position are seeded randomly for MVP (`backend/app/seed.py`)
 - PostgreSQL currently configured with `trust` authentication for local dev convenience — not suitable for shared/exposed environments
+- Time-window enforcement (`services/time_windows.py`) uses a placeholder `VEHICLE_SPEED` constant — tune once real map scale/timing is decided. Seeded orders have no time windows by default; set them via `PUT /orders/{id}` to test enforcement
+- If order/vehicle counts grow unexpectedly across dev sessions (repeated `python app/seed.py` runs add on top of existing data, they don't replace it), reset with:
+  ```sql
+  TRUNCATE route_stops, routes, orders, vehicles RESTART IDENTITY CASCADE;
+  ```
