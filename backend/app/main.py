@@ -1,8 +1,10 @@
+import threading
+import webbrowser
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from database import Base, engine
-from routers import orders, vehicles
+from routers import orders, vehicles, routes
 
 Base.metadata.create_all(bind=engine)
 
@@ -18,8 +20,14 @@ app.add_middleware(
 
 app.include_router(orders.router)
 app.include_router(vehicles.router)
+app.include_router(routes.router)
 
 
 @app.get("/")
 def root():
     return {"status": "ok"}
+
+
+@app.on_event("startup")
+def open_browser():
+    threading.Timer(1.5, lambda: webbrowser.open("http://localhost:8000/docs")).start()

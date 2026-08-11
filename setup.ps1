@@ -118,12 +118,7 @@ try {
         throw "Backend directory missing"
     }
     Push-Location $BackendDir
-    if (-not (Test-Path "venv")) {
-        Write-Log "Creating Python virtual environment"
-        python -m venv venv
-    }
-    $venvPip = Join-Path $BackendDir "venv\Scripts\pip.exe"
-    & $venvPip install -r requirements.txt --quiet
+    python -m pip install -r requirements.txt --break-system-packages --quiet
     Write-Log "Backend dependencies installed"
     Pop-Location
 

@@ -1,0 +1,10 @@
+2026-08-10 11:05:32 [INFO] Setup started. Project root: E:\Programming\Group_projects\Sirma\delivery-route-dashboard
+2026-08-10 11:05:32 [INFO] Log path (temp): C:\Users\MORDEK~1\AppData\Local\Temp\delivery_route_setup_20260810_110532.log
+2026-08-10 11:05:32 [INFO] Python OK: 3.11.5
+2026-08-10 11:05:32 [INFO] Node OK: 24.18.0
+2026-08-10 11:05:32 [INFO] PostgreSQL OK
+2026-08-10 11:05:35 [INFO] Backend dependencies installed
+2026-08-10 11:05:35 [WARN] package.json not found, skipping npm install
+2026-08-10 11:05:35 [INFO] Database 'delivery_route_db' already exists, skipping creation
+2026-08-10 11:05:35 [INFO] .env already exists, skipping
+2026-08-10 11:05:35 [INFO] Setup completed successfully

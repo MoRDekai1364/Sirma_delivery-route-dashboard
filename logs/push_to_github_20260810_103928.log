@@ -1,0 +1,171 @@
+2026-08-10 10:39:28,100 [INFO] Source folder: E:\Programming\Group_projects\Sirma\delivery-route-dashboard
+2026-08-10 10:39:28,101 [INFO] Temp log: C:\Users\MORDEK~1\AppData\Local\Temp\push_to_github_20260810_103928.log
+2026-08-10 10:39:28,101 [DEBUG] Running: git --version
+2026-08-10 10:39:28,244 [DEBUG] stdout: git version 2.55.0.windows.2
+2026-08-10 10:39:28,244 [DEBUG] stderr: 
+2026-08-10 10:39:28,244 [INFO] Existing git repository detected.
+2026-08-10 10:39:28,245 [DEBUG] Running: git remote -v
+2026-08-10 10:39:28,366 [DEBUG] stdout: origin	https://github.com/MoRDekai1364/Sirma_project_13.git (fetch)
+origin	https://github.com/MoRDekai1364/Sirma_project_13.git (push)
+2026-08-10 10:39:28,366 [DEBUG] stderr: 
+2026-08-10 10:39:28,366 [INFO] Detected remotes:
+2026-08-10 10:39:28,367 [INFO]   1. origin -> https://github.com/MoRDekai1364/Sirma_project_13.git
+2026-08-10 10:39:28,367 [INFO]   2. Enter a new repository URL
+2026-08-10 10:39:32,441 [INFO] Verifying repository access.
+2026-08-10 10:39:32,441 [DEBUG] Running: git ls-remote https://github.com/MoRDekai1364/Sirma_project_13.git
+2026-08-10 10:39:33,270 [DEBUG] stdout: 8f5f8c9c4cfb2852a6ad8dd6fad4f8db8a2f68d1	HEAD
+8f5f8c9c4cfb2852a6ad8dd6fad4f8db8a2f68d1	refs/heads/main
+2026-08-10 10:39:33,270 [DEBUG] stderr: 
+2026-08-10 10:39:33,271 [DEBUG] Running: git branch --list
+2026-08-10 10:39:33,389 [DEBUG] stdout: * main
+2026-08-10 10:39:33,390 [DEBUG] stderr: 
+2026-08-10 10:39:33,390 [DEBUG] Running: git ls-remote --heads origin
+2026-08-10 10:39:34,207 [DEBUG] stdout: 8f5f8c9c4cfb2852a6ad8dd6fad4f8db8a2f68d1	refs/heads/main
+2026-08-10 10:39:34,207 [DEBUG] stderr: 
+2026-08-10 10:39:34,208 [INFO] Detected branches:
+2026-08-10 10:39:34,208 [INFO]   1. main
+2026-08-10 10:39:34,208 [INFO]   2. Enter a new branch name
+2026-08-10 10:39:36,956 [DEBUG] Running: git branch --list
+2026-08-10 10:39:37,079 [DEBUG] stdout: * main
+2026-08-10 10:39:37,080 [DEBUG] stderr: 
+2026-08-10 10:39:37,080 [DEBUG] Running: git checkout main
+2026-08-10 10:39:37,227 [DEBUG] stdout: M	push_to_github.py
+Your branch is up to date with 'origin/main'.
+2026-08-10 10:39:37,228 [DEBUG] stderr: Already on 'main'
+2026-08-10 10:39:44,007 [DEBUG] Running: git add -A
+2026-08-10 10:39:44,673 [DEBUG] stdout: 
+2026-08-10 10:39:44,674 [DEBUG] stderr: warning: in the working copy of 'push_to_github.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/.env', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/alembic.ini', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/alembic/env.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/alembic/script.py.mako', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/app/main.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/app/routers/vehicles.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/app/seed.py', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'backend/requirements.txt', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'setup.ps1', LF will be replaced by CRLF the next time Git touches it
+2026-08-10 10:39:44,674 [DEBUG] Running: git status --porcelain
+2026-08-10 10:39:44,830 [DEBUG] stdout: A  backend/.env
+A  backend/alembic.ini
+A  backend/alembic/README
+A  backend/alembic/__pycache__/env.cpython-311.pyc
+A  backend/alembic/env.py
+A  backend/alembic/script.py.mako
+A  backend/app/__pycache__/database.cpython-311.pyc
+A  backend/app/__pycache__/models.cpython-311.pyc
+A  backend/app/main.py
+A  backend/app/routers/vehicles.py
+A  backend/app/seed.py
+A  backend/requirements.txt
+A  logs/push_to_github_20260810_101657.log
+M  push_to_github.py
+A  setup.ps1
+2026-08-10 10:39:44,830 [DEBUG] stderr: 
+2026-08-10 10:39:44,830 [DEBUG] Running: git commit -m Added setup script
+2026-08-10 10:39:45,387 [DEBUG] stdout: [main c8bf1e9] Added setup script
+ 15 files changed, 791 insertions(+), 25 deletions(-)
+ create mode 100644 backend/.env
+ create mode 100644 backend/alembic.ini
+ create mode 100644 backend/alembic/README
+ create mode 100644 backend/alembic/__pycache__/env.cpython-311.pyc
+ create mode 100644 backend/alembic/env.py
+ create mode 100644 backend/alembic/script.py.mako
+ create mode 100644 backend/app/__pycache__/database.cpython-311.pyc
+ create mode 100644 backend/app/__pycache__/models.cpython-311.pyc
+ create mode 100644 backend/app/main.py
+ create mode 100644 backend/app/routers/vehicles.py
+ create mode 100644 backend/app/seed.py
+ create mode 100644 backend/requirements.txt
+ create mode 100644 logs/push_to_github_20260810_101657.log
+ create mode 100644 setup.ps1
+2026-08-10 10:39:45,387 [DEBUG] stderr: 
+2026-08-10 10:39:45,387 [DEBUG] Running: git push -u origin main --progress
+2026-08-10 10:39:47,887 [DEBUG] Enumerating objects: 29, done.
+2026-08-10 10:39:47,888 [DEBUG] Counting objects:   3% (1/29)
+2026-08-10 10:39:47,888 [DEBUG] Counting objects:   6% (2/29)
+2026-08-10 10:39:47,888 [DEBUG] Counting objects:  10% (3/29)
+2026-08-10 10:39:47,889 [DEBUG] Counting objects:  13% (4/29)
+2026-08-10 10:39:47,889 [DEBUG] Counting objects:  17% (5/29)
+2026-08-10 10:39:47,889 [DEBUG] Counting objects:  20% (6/29)
+2026-08-10 10:39:47,889 [DEBUG] Counting objects:  24% (7/29)
+2026-08-10 10:39:47,890 [DEBUG] Counting objects:  27% (8/29)
+2026-08-10 10:39:47,890 [DEBUG] Counting objects:  31% (9/29)
+2026-08-10 10:39:47,890 [DEBUG] Counting objects:  34% (10/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  37% (11/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  41% (12/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  44% (13/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  48% (14/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  51% (15/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  55% (16/29)
+2026-08-10 10:39:47,891 [DEBUG] Counting objects:  58% (17/29)
+2026-08-10 10:39:47,892 [DEBUG] Counting objects:  62% (18/29)
+2026-08-10 10:39:47,892 [DEBUG] Counting objects:  65% (19/29)
+2026-08-10 10:39:47,892 [DEBUG] Counting objects:  68% (20/29)
+2026-08-10 10:39:47,892 [DEBUG] Counting objects:  72% (21/29)
+2026-08-10 10:39:47,892 [DEBUG] Counting objects:  75% (22/29)
+2026-08-10 10:39:47,893 [DEBUG] Counting objects:  79% (23/29)
+2026-08-10 10:39:47,893 [DEBUG] Counting objects:  82% (24/29)
+2026-08-10 10:39:47,893 [DEBUG] Counting objects:  86% (25/29)
+2026-08-10 10:39:47,893 [DEBUG] Counting objects:  89% (26/29)
+2026-08-10 10:39:47,894 [DEBUG] Counting objects:  93% (27/29)
+2026-08-10 10:39:47,894 [DEBUG] Counting objects:  96% (28/29)
+2026-08-10 10:39:47,894 [DEBUG] Counting objects: 100% (29/29)
+2026-08-10 10:39:47,894 [DEBUG] Counting objects: 100% (29/29), done.
+2026-08-10 10:39:47,895 [DEBUG] Delta compression using up to 16 threads
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:   4% (1/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:   9% (2/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  13% (3/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  18% (4/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  22% (5/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  27% (6/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  31% (7/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  36% (8/22)
+2026-08-10 10:39:47,895 [DEBUG] Compressing objects:  40% (9/22)
+2026-08-10 10:39:47,896 [DEBUG] Compressing objects:  45% (10/22)
+2026-08-10 10:39:47,896 [DEBUG] Compressing objects:  50% (11/22)
+2026-08-10 10:39:47,897 [DEBUG] Compressing objects:  54% (12/22)
+2026-08-10 10:39:47,897 [DEBUG] Compressing objects:  59% (13/22)
+2026-08-10 10:39:47,898 [DEBUG] Compressing objects:  63% (14/22)
+2026-08-10 10:39:47,898 [DEBUG] Compressing objects:  68% (15/22)
+2026-08-10 10:39:47,898 [DEBUG] Compressing objects:  72% (16/22)
+2026-08-10 10:39:47,898 [DEBUG] Compressing objects:  77% (17/22)
+2026-08-10 10:39:47,899 [DEBUG] Compressing objects:  81% (18/22)
+2026-08-10 10:39:47,899 [DEBUG] Compressing objects:  86% (19/22)
+2026-08-10 10:39:47,899 [DEBUG] Compressing objects:  90% (20/22)
+2026-08-10 10:39:47,899 [DEBUG] Compressing objects:  95% (21/22)
+2026-08-10 10:39:47,899 [DEBUG] Compressing objects: 100% (22/22)
+2026-08-10 10:39:47,900 [DEBUG] Compressing objects: 100% (22/22), done.
+2026-08-10 10:39:47,900 [DEBUG] Writing objects:   4% (1/24)
+2026-08-10 10:39:47,901 [DEBUG] Writing objects:   8% (2/24)
+2026-08-10 10:39:47,901 [DEBUG] Writing objects:  12% (3/24)
+2026-08-10 10:39:47,901 [DEBUG] Writing objects:  16% (4/24)
+2026-08-10 10:39:47,902 [DEBUG] Writing objects:  20% (5/24)
+2026-08-10 10:39:47,902 [DEBUG] Writing objects:  25% (6/24)
+2026-08-10 10:39:47,902 [DEBUG] Writing objects:  29% (7/24)
+2026-08-10 10:39:47,903 [DEBUG] Writing objects:  33% (8/24)
+2026-08-10 10:39:47,903 [DEBUG] Writing objects:  37% (9/24)
+2026-08-10 10:39:47,904 [DEBUG] Writing objects:  41% (10/24)
+2026-08-10 10:39:47,904 [DEBUG] Writing objects:  45% (11/24)
+2026-08-10 10:39:47,904 [DEBUG] Writing objects:  50% (12/24)
+2026-08-10 10:39:47,904 [DEBUG] Writing objects:  54% (13/24)
+2026-08-10 10:39:47,905 [DEBUG] Writing objects:  58% (14/24)
+2026-08-10 10:39:47,906 [DEBUG] Writing objects:  62% (15/24)
+2026-08-10 10:39:47,906 [DEBUG] Writing objects:  66% (16/24)
+2026-08-10 10:39:47,906 [DEBUG] Writing objects:  70% (17/24)
+2026-08-10 10:39:47,907 [DEBUG] Writing objects:  75% (18/24)
+2026-08-10 10:39:47,907 [DEBUG] Writing objects:  79% (19/24)
+2026-08-10 10:39:47,908 [DEBUG] Writing objects:  83% (20/24)
+2026-08-10 10:39:47,908 [DEBUG] Writing objects:  87% (21/24)
+2026-08-10 10:39:47,909 [DEBUG] Writing objects:  91% (22/24)
+2026-08-10 10:39:47,910 [DEBUG] Writing objects:  95% (23/24)
+2026-08-10 10:39:47,910 [DEBUG] Writing objects: 100% (24/24)
+2026-08-10 10:39:47,910 [DEBUG] Writing objects: 100% (24/24), 15.12 KiB | 1.51 MiB/s, done.
+2026-08-10 10:39:47,910 [DEBUG] Total 24 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+2026-08-10 10:39:48,812 [DEBUG] remote: Resolving deltas:   0% (0/1)
+2026-08-10 10:39:48,812 [DEBUG] remote: Resolving deltas: 100% (1/1)
+2026-08-10 10:39:48,814 [DEBUG] remote: Resolving deltas: 100% (1/1), completed with 1 local object.
+2026-08-10 10:39:48,820 [DEBUG] To https://github.com/MoRDekai1364/Sirma_project_13.git
+2026-08-10 10:39:48,820 [DEBUG] 8f5f8c9..c8bf1e9  main -> main
+2026-08-10 10:39:48,859 [DEBUG] branch 'main' set up to track 'origin/main'.
+2026-08-10 10:39:48,873 [INFO] Push finished in 3.5s. Done.
+2026-08-10 10:39:48,874 [INFO] Push complete. Remote: https://github.com/MoRDekai1364/Sirma_project_13.git Branch: main Committed: True
