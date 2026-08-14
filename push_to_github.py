@@ -91,6 +91,8 @@ def select_repo():
             logger.info(f"  {i}. {name} -> {remotes[name]}")
         logger.info(f"  {len(names)+1}. Enter a new repository URL")
         choice = input("Select repository: ").strip()
+        if not choice:
+            choice = "1"
         if choice.isdigit() and 1 <= int(choice) <= len(names):
             name = names[int(choice) - 1]
             url = remotes[name]
@@ -147,6 +149,8 @@ def select_branch(remote_name):
                 logger.info(f"  {i}. {name}")
             logger.info(f"  {len(all_branches)+1}. Enter a new branch name")
             choice = input("Select branch: ").strip()
+            if not choice:
+                choice = "1"
             if choice.isdigit() and 1 <= int(choice) <= len(all_branches):
                 return all_branches[int(choice) - 1]
             if choice.isdigit() and int(choice) == len(all_branches) + 1:
@@ -184,6 +188,40 @@ def stage_and_commit(message):
         return False
     run(["git", "commit", "-m", message])
     return True
+
+def sync_with_remote(remote_name, branch):
+    logger.info("Checking for remote changes before pushing.")
+    fetch_result = run(["git", "fetch", remote_name], check=False)
+    if fetch_result.returncode != 0:
+        logger.info("Could not fetch remote — skipping pre-push sync check.")
+        return
+
+    remote_ref = f"{remote_name}/{branch}"
+    verify = run(["git", "rev-parse", "--verify", "--quiet", remote_ref], check=False)
+    if verify.returncode != 0:
+        logger.info("Remote branch does not exist yet — nothing to sync.")
+        return
+
+    local_sha = run(["git", "rev-parse", branch]).stdout.strip()
+    remote_sha = run(["git", "rev-parse", remote_ref]).stdout.strip()
+    if local_sha == remote_sha:
+        return
+
+    behind = run(["git", "rev-list", "--count", f"{branch}..{remote_ref}"]).stdout.strip()
+    if behind == "0":
+        return
+
+    logger.info(f"Remote has {behind} commit(s) you don't have locally — rebasing before push.")
+    result = run(["git", "rebase", remote_ref], check=False)
+    if result.returncode != 0:
+        run(["git", "rebase", "--abort"], check=False)
+        fail(
+            "Rebase failed — the remote has changes that conflict with yours. "
+            f"Resolve manually: open a terminal in {SOURCE_DIR} and run "
+            f"'git pull --rebase {remote_name} {branch}', fix the conflicts, "
+            "then re-run this script."
+        )
+    logger.info("Rebased local commits on top of remote changes.")
 
 def push_with_progress(remote_name, branch):
     cmd = ["git", "push", "-u", remote_name, branch, "--progress"]
@@ -250,8 +288,10 @@ def main():
         checkout_branch(branch)
         message = input("Enter commit message: ").strip()
         if not message:
-            fail("No commit message provided.")
+            message = f"(this is automated commit message) {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+            logger.info(f"No commit message entered — using: {message}")
         committed = stage_and_commit(message)
+        sync_with_remote(remote_name, branch)
         push_with_progress(remote_name, branch)
     except Exception as e:
         fail(f"Error: {e}")

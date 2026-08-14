@@ -16,30 +16,78 @@ function Write-Status {
     }
 }
 
+function Stop-ProcessTree {
+    param([int]$ProcessId, [string]$Label)
+
+    try {
+        $parent = Get-CimInstance Win32_Process -Filter "ProcessId = $ProcessId" -ErrorAction SilentlyContinue
+        if (-not $parent) { return }
+
+        $children = Get-CimInstance Win32_Process -Filter "ParentProcessId = $ProcessId" -ErrorAction SilentlyContinue
+        foreach ($child in $children) {
+            Stop-ProcessTree -ProcessId $child.ProcessId -Label "$Label (child)"
+        }
+
+        Stop-Process -Id $ProcessId -Force -ErrorAction SilentlyContinue
+        Start-Sleep -Milliseconds 300
+
+        $stillAlive = Get-Process -Id $ProcessId -ErrorAction SilentlyContinue
+        if ($stillAlive) {
+            Write-Status "$Label (PID $ProcessId) did not terminate cleanly" "WARN"
+        } else {
+            Write-Status "$Label (PID $ProcessId) stopped"
+        }
+    } catch {
+        Write-Status "Error stopping $Label (PID $ProcessId): $_" "ERROR"
+    }
+}
+
 Write-Status "Stopping backend (uvicorn) processes"
 $uvicornProcs = Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" |
     Where-Object { $_.CommandLine -match "uvicorn" }
 
 if ($uvicornProcs) {
     foreach ($proc in $uvicornProcs) {
-        Stop-Process -Id $proc.ProcessId -Force -ErrorAction SilentlyContinue
-        Write-Status "Stopped process ID $($proc.ProcessId)"
+        $parentId = $proc.ParentProcessId
+        $parentProc = Get-CimInstance Win32_Process -Filter "ProcessId = $parentId" -ErrorAction SilentlyContinue
+        if ($parentProc -and $parentProc.Name -match "powershell|cmd") {
+            Stop-ProcessTree -ProcessId $parentId -Label "Backend terminal"
+        } else {
+            Stop-ProcessTree -ProcessId $proc.ProcessId -Label "Backend (uvicorn)"
+        }
     }
 } else {
     Write-Status "No running uvicorn process found"
 }
 
-Write-Status "Stopping frontend (npm/node) dev server"
+Write-Status "Stopping frontend (npm/node/vite) processes"
 $nodeProcs = Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" |
     Where-Object { $_.CommandLine -match "vite|npm" }
 
 if ($nodeProcs) {
     foreach ($proc in $nodeProcs) {
-        Stop-Process -Id $proc.ProcessId -Force -ErrorAction SilentlyContinue
-        Write-Status "Stopped process ID $($proc.ProcessId)"
+        $parentId = $proc.ParentProcessId
+        $parentProc = Get-CimInstance Win32_Process -Filter "ProcessId = $parentId" -ErrorAction SilentlyContinue
+        if ($parentProc -and $parentProc.Name -match "powershell|cmd") {
+            Stop-ProcessTree -ProcessId $parentId -Label "Frontend terminal"
+        } else {
+            Stop-ProcessTree -ProcessId $proc.ProcessId -Label "Frontend (node)"
+        }
     }
 } else {
     Write-Status "No running frontend dev server found"
+}
+
+Write-Status "Verifying no leftover processes remain"
+$leftoverUvicorn = Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" |
+    Where-Object { $_.CommandLine -match "uvicorn" }
+$leftoverNode = Get-CimInstance Win32_Process -Filter "Name = 'node.exe'" |
+    Where-Object { $_.CommandLine -match "vite|npm" }
+
+if ($leftoverUvicorn -or $leftoverNode) {
+    Write-Status "Some processes could not be fully terminated. Manual check recommended (Task Manager)." "WARN"
+} else {
+    Write-Status "No leftover backend/frontend processes detected"
 }
 
 $stopPostgres = Read-Host "Stop PostgreSQL service too? (y/N)"
