@@ -6,7 +6,8 @@ from database import get_db
 import models
 import schemas
 from services.assignment import assign_orders_to_vehicles
-from services.routing import build_vehicle_route
+from services.routing import build_vehicle_route, route_distance
+from services.time_windows import enforce_time_windows
 
 router = APIRouter(prefix="/routes", tags=["routes"])
 
@@ -26,6 +27,11 @@ def plan_routes(db: Session = Depends(get_db)):
         vehicle_orders = assignments.get(vehicle.id, [])
         depot = (vehicle.depot_x, vehicle.depot_y)
         ordered_stops, total_distance = build_vehicle_route(depot, vehicle_orders)
+
+        feasible_stops, infeasible_stops = enforce_time_windows(depot, ordered_stops, vehicle.work_start)
+        unserved.extend(infeasible_stops)
+        ordered_stops = feasible_stops
+        total_distance = route_distance(depot, ordered_stops)
 
         db_route = models.Route(
             vehicle_id=vehicle.id,

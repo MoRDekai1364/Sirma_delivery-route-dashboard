@@ -45,6 +45,11 @@ class VehicleOut(VehicleBase):
         from_attributes = True
 
 
+class OrderImportResult(BaseModel):
+    created: int
+    rejected: List[dict]
+
+
 class RouteStopOut(BaseModel):
     id: int
     order_id: int

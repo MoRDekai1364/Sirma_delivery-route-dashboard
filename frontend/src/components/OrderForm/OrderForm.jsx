@@ -6,6 +6,41 @@ function OrderForm({ onOrderCreated }) {
   const [volume, setVolume] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState(null);
+
+  const handleImport = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    setImporting(true);
+    setError(null);
+    setImportResult(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("/api/orders/import", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Import failed: ${response.status}`);
+      }
+
+      const result = await response.json();
+      setImportResult(result);
+
+      if (onOrderCreated) onOrderCreated();
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setImporting(false);
+      e.target.value = "";
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,6 +104,23 @@ function OrderForm({ onOrderCreated }) {
       <button type="submit" disabled={submitting}>
         {submitting ? "Adding..." : "Add Order"}
       </button>
+      <label style={{ cursor: "pointer" }}>
+        <input
+          type="file"
+          accept=".csv"
+          onChange={handleImport}
+          disabled={importing}
+          style={{ display: "none" }}
+        />
+        <span style={{ border: "1px solid #ccc", padding: "6px 10px", borderRadius: "4px" }}>
+          {importing ? "Importing..." : "Import CSV"}
+        </span>
+      </label>
+      {importResult && (
+        <span style={{ fontSize: "13px" }}>
+          Imported {importResult.created}, rejected {importResult.rejected.length}
+        </span>
+      )}
       {error && <span style={{ color: "red", fontSize: "13px" }}>{error}</span>}
     </form>
   );

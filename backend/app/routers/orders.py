@@ -1,4 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException
+import csv
+import io
+
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from pydantic import ValidationError
 from sqlalchemy.orm import Session
 from typing import List
 
@@ -7,6 +11,38 @@ import models
 import schemas
 
 router = APIRouter(prefix="/orders", tags=["orders"])
+
+
+@router.post("/import", response_model=schemas.OrderImportResult)
+def import_orders(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    if not file.filename.endswith(".csv"):
+        raise HTTPException(status_code=400, detail="File must be a .csv")
+
+    raw = file.file.read().decode("utf-8")
+    reader = csv.DictReader(io.StringIO(raw))
+
+    created = 0
+    rejected = []
+
+    for i, row in enumerate(reader, start=1):
+        try:
+            order_data = schemas.OrderCreate(
+                x=float(row["x"]),
+                y=float(row["y"]),
+                volume=float(row["volume"]),
+                time_window_start=row.get("time_window_start") or None,
+                time_window_end=row.get("time_window_end") or None,
+            )
+        except (ValidationError, KeyError, ValueError) as e:
+            rejected.append({"row": i, "reason": str(e)})
+            continue
+
+        db_order = models.Order(**order_data.dict())
+        db.add(db_order)
+        created += 1
+
+    db.commit()
+    return schemas.OrderImportResult(created=created, rejected=rejected)
 
 
 @router.post("/", response_model=schemas.OrderOut)
