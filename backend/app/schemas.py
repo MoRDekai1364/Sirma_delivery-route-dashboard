@@ -32,6 +32,7 @@ class VehicleBase(BaseModel):
     work_start: Optional[time] = None
     work_end: Optional[time] = None
     active: bool = True
+    vehicle_type: str = "van"
 
 
 class VehicleCreate(VehicleBase):
@@ -67,6 +68,7 @@ class RouteOut(BaseModel):
     status: str
     created_at: datetime
     stops: List[RouteStopOut] = []
+    geometry: Optional[List[List[float]]] = None
 
     class Config:
         from_attributes = True

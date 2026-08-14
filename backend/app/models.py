@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, Boolean, DateTime, Time, ForeignKey
+from sqlalchemy import Column, Integer, Float, String, Boolean, DateTime, Time, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from database import Base
@@ -30,6 +30,7 @@ class Vehicle(Base):
     work_start = Column(Time, nullable=True)
     work_end = Column(Time, nullable=True)
     active = Column(Boolean, default=True)
+    vehicle_type = Column(String, default="van")
 
     routes = relationship("Route", back_populates="vehicle")
 
@@ -42,6 +43,7 @@ class Route(Base):
     total_distance = Column(Float, default=0)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     status = Column(String, default="draft")
+    geometry = Column(JSON, nullable=True)
 
     vehicle = relationship("Vehicle", back_populates="routes")
     stops = relationship("RouteStop", back_populates="route", order_by="RouteStop.sequence")

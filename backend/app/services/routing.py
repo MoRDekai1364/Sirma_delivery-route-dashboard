@@ -1,43 +1,70 @@
-from services.distance import euclidean_distance
+from services.distance import build_distance_matrix, fetch_osrm_route_geometry
+from services.vehicle_types import VEHICLE_CHARACTERISTICS
+import math
 
 
-def nearest_neighbor_route(depot, orders):
-    if not orders:
-        return []
-
-    unvisited = list(orders)
+def _nearest_neighbor_indices(matrix, n):
+    unvisited = list(range(1, n))
     route = []
-    current_x, current_y = depot
-
+    current = 0
     while unvisited:
-        nearest = min(
-            unvisited,
-            key=lambda o: euclidean_distance(current_x, current_y, o.x, o.y)
-        )
+        nearest = min(unvisited, key=lambda i: matrix[current][i])
         route.append(nearest)
         unvisited.remove(nearest)
-        current_x, current_y = nearest.x, nearest.y
-
+        current = nearest
     return route
 
 
-def route_distance(depot, route):
-    if not route:
+def _route_distance_indices(matrix, route_indices):
+    if not route_indices:
         return 0.0
-
-    total = euclidean_distance(depot[0], depot[1], route[0].x, route[0].y)
-    for i in range(len(route) - 1):
-        total += euclidean_distance(route[i].x, route[i].y, route[i + 1].x, route[i + 1].y)
-    total += euclidean_distance(route[-1].x, route[-1].y, depot[0], depot[1])
+    total = matrix[0][route_indices[0]]
+    for i in range(len(route_indices) - 1):
+        total += matrix[route_indices[i]][route_indices[i + 1]]
+    total += matrix[route_indices[-1]][0]
     return total
 
 
-def two_opt(depot, route):
-    if len(route) < 3:
-        return route
+def _turn_angle(p1, p2, p3):
+    v1 = (p2[0] - p1[0], p2[1] - p1[1])
+    v2 = (p3[0] - p2[0], p3[1] - p2[1])
+    len1 = math.hypot(*v1)
+    len2 = math.hypot(*v2)
+    if len1 == 0 or len2 == 0:
+        return 180.0
+    dot = v1[0] * v2[0] + v1[1] * v2[1]
+    cos_angle = max(-1.0, min(1.0, dot / (len1 * len2)))
+    return math.degrees(math.acos(cos_angle))
 
-    best_route = route[:]
-    best_distance = route_distance(depot, best_route)
+
+def _turn_penalty(points, route_indices, turn_penalty_weight):
+    if turn_penalty_weight == 0 or len(route_indices) < 2:
+        return 0.0
+
+    full_indices = [0] + route_indices + [0]
+    penalty = 0.0
+
+    for i in range(1, len(full_indices) - 1):
+        p1 = points[full_indices[i - 1]]
+        p2 = points[full_indices[i]]
+        p3 = points[full_indices[i + 1]]
+        turn_amount = 180.0 - _turn_angle(p1, p2, p3)
+        if turn_amount > 45.0:
+            penalty += (turn_amount - 45.0) * turn_penalty_weight
+
+    return penalty
+
+
+def _route_cost_indices(matrix, points, route_indices, turn_penalty_weight):
+    return _route_distance_indices(matrix, route_indices) + _turn_penalty(points, route_indices, turn_penalty_weight)
+
+
+def _two_opt_indices(matrix, points, route_indices, turn_penalty_weight):
+    if len(route_indices) < 3:
+        return route_indices
+
+    best_route = route_indices[:]
+    best_cost = _route_cost_indices(matrix, points, best_route, turn_penalty_weight)
     improved = True
 
     while improved:
@@ -45,16 +72,46 @@ def two_opt(depot, route):
         for i in range(len(best_route) - 1):
             for j in range(i + 1, len(best_route)):
                 new_route = best_route[:i] + best_route[i:j + 1][::-1] + best_route[j + 1:]
-                new_distance = route_distance(depot, new_route)
-                if new_distance < best_distance:
+                new_cost = _route_cost_indices(matrix, points, new_route, turn_penalty_weight)
+                if new_cost < best_cost:
                     best_route = new_route
-                    best_distance = new_distance
+                    best_cost = new_cost
                     improved = True
 
     return best_route
 
 
-def build_vehicle_route(depot, orders):
-    initial = nearest_neighbor_route(depot, orders)
-    optimized = two_opt(depot, initial)
-    return optimized, route_distance(depot, optimized)
+def build_vehicle_route(depot, orders, vehicle_type="van"):
+    if not orders:
+        return [], 0.0
+
+    characteristics = VEHICLE_CHARACTERISTICS.get(vehicle_type, VEHICLE_CHARACTERISTICS["van"])
+    turn_penalty_weight = characteristics["turn_penalty_weight"]
+
+    points = [depot] + [(o.x, o.y) for o in orders]
+    matrix = build_distance_matrix(points)
+
+    initial_indices = _nearest_neighbor_indices(matrix, len(points))
+    optimized_indices = _two_opt_indices(matrix, points, initial_indices, turn_penalty_weight)
+
+    ordered_stops = [orders[i - 1] for i in optimized_indices]
+    total_distance = _route_distance_indices(matrix, optimized_indices)
+    return ordered_stops, total_distance
+
+
+def route_distance(depot, route):
+    if not route:
+        return 0.0
+
+    points = [depot] + [(o.x, o.y) for o in route]
+    matrix = build_distance_matrix(points)
+    indices = list(range(1, len(points)))
+    return _route_distance_indices(matrix, indices)
+
+
+def get_route_geometry(depot, ordered_stops):
+    if not ordered_stops:
+        return None
+
+    points = [depot] + [(o.x, o.y) for o in ordered_stops] + [depot]
+    return fetch_osrm_route_geometry(points)

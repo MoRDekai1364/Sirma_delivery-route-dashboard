@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 
+const VEHICLE_TYPES = [
+  { value: "tir", label: "TIR" },
+  { value: "van", label: "Van" },
+  { value: "small_car", label: "Small Car" },
+];
+
 function VehicleForm({ onVehicleCreated }) {
   const [name, setName] = useState("");
   const [capacity, setCapacity] = useState("");
   const [depotX, setDepotX] = useState("");
   const [depotY, setDepotY] = useState("");
+  const [vehicleType, setVehicleType] = useState("van");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
 
@@ -23,6 +30,7 @@ function VehicleForm({ onVehicleCreated }) {
           depot_x: parseFloat(depotX),
           depot_y: parseFloat(depotY),
           active: true,
+          vehicle_type: vehicleType,
         }),
       });
 
@@ -35,6 +43,7 @@ function VehicleForm({ onVehicleCreated }) {
       setCapacity("");
       setDepotX("");
       setDepotY("");
+      setVehicleType("van");
 
       if (onVehicleCreated) onVehicleCreated(created);
     } catch (err) {
@@ -78,6 +87,11 @@ function VehicleForm({ onVehicleCreated }) {
         required
         style={{ width: "90px" }}
       />
+      <select value={vehicleType} onChange={(e) => setVehicleType(e.target.value)} style={{ width: "120px" }}>
+        {VEHICLE_TYPES.map((t) => (
+          <option key={t.value} value={t.value}>{t.label}</option>
+        ))}
+      </select>
       <button type="submit" disabled={submitting}>
         {submitting ? "Adding..." : "Add Vehicle"}
       </button>

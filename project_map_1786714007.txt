@@ -1,4 +1,4 @@
-Project Map Generated: 2026-08-14 15:46:25.850467
+Project Map Generated: 2026-08-14 16:26:47.017868
 Root: E:\Programming\Group_projects\Sirma\delivery-route-dashboard
 
 LEGEND & ICONS:
@@ -30,12 +30,12 @@ Report Mode: TREE
         |-- 📁 logs
             |-- 📁 refs
                 |-- 📁 heads
-                    |-- 📄 main (2.05 KB)
+                    |-- 📄 main (2.24 KB)
                 |-- 📁 remotes
                     |-- 📁 origin
                         |-- 📄 HEAD (168.00 B)
-                        |-- 📄 main (1.75 KB)
-            |-- 📄 HEAD (4.79 KB)
+                        |-- 📄 main (1.93 KB)
+            |-- 📄 HEAD (5.17 KB)
         |-- 📁 objects
             |-- 📁 01
                 |-- 📄 01899c0ba95445a0bd517564cf54a953df3c02 (60.00 B)
@@ -61,6 +61,8 @@ Report Mode: TREE
                 |-- 📄 f5939b3112d21d7ce1578ad5949516f919de49 (2.06 KB)
             |-- 📁 1d
                 |-- 📄 971ade1c92aace1da66b70ff84b96173e3f1cd (151.00 B)
+            |-- 📁 1e
+                |-- 📄 625028d6c21b2edae780c8cf1eff1607ddcb47 (6.30 KB)
             |-- 📁 20
                 |-- 📄 b2e8ea2e3d13935d31eb5397ca420a4d366c1b (232.00 B)
             |-- 📁 25
@@ -77,6 +79,8 @@ Report Mode: TREE
                 |-- 📄 d72dec9b17f0b95f19253d26ceb90201a011ea (56.00 B)
             |-- 📁 34
                 |-- 📄 eda0a6c7f4088523fe6c918a5dba1d0749f8cb (151.00 B)
+            |-- 📁 35
+                |-- 📄 f703d93d9e9e61e9469b2c7b975d64c6593880 (32.87 KB)
             |-- 📁 3a
                 |-- 📄 08ca90fb015c681e0a5b033661a886e66474a5 (234.00 B)
             |-- 📁 3b
@@ -179,6 +183,8 @@ Report Mode: TREE
                 |-- 📄 cfd872db7bb4713bb387cf8c24cd9a28a435ca (151.00 B)
             |-- 📁 af
                 |-- 📄 61825a297ca9d185b5bc2f88bc3d2c4f5960e0 (160.00 B)
+            |-- 📁 b0
+                |-- 📄 cd854e43c141ee04e1701fbf9688829177124c (493.00 B)
             |-- 📁 b6
                 |-- 📄 dec8b13d589e776b3191366fb92f63e69ed7aa (192.00 B)
             |-- 📁 b8
@@ -209,6 +215,7 @@ Report Mode: TREE
             |-- 📁 dc
                 |-- 📄 904ddb47cac9dd5c2142b123ab4d09cead87a6 (218.00 B)
             |-- 📁 dd
+                |-- 📄 580f0cdeb9dfa1d09dafd1b1e02a4bb284b6b5 (185.00 B)
                 |-- 📄 924e40fa96b94fa543fc16b9aa4882f0043f95 (119.00 B)
             |-- 📁 de
                 |-- 📄 20ad2e552a9bbe1becc2b830e6e2a049ed62f3 (140.00 B)
@@ -262,12 +269,12 @@ Report Mode: TREE
                     |-- 📄 HEAD (30.00 B)
                     |-- 📄 main (41.00 B)
             |-- 📁 tags
-        |-- 📄 COMMIT_EDITMSG (26.00 B)
+        |-- 📄 COMMIT_EDITMSG (18.00 B)
         |-- 📄 config (307.00 B)
         |-- 📄 description (73.00 B)
         |-- 📄 FETCH_HEAD (122.00 B)
         |-- 📄 HEAD (21.00 B)
-        |-- 📄 index (293.36 KB)
+        |-- 📄 index (293.62 KB)
         |-- 📄 ORIG_HEAD (41.00 B)
     |-- 📁 backend
         |-- 📁 alembic
@@ -280,34 +287,36 @@ Report Mode: TREE
             |-- 📁 __pycache__
                 |-- 📄 database.cpython-311.pyc (1.27 KB)
                 |-- 📄 main.cpython-311.pyc (1.95 KB)
-                |-- 📄 models.cpython-311.pyc (3.90 KB)
-                |-- 📄 schemas.cpython-311.pyc (4.15 KB)
+                |-- 📄 models.cpython-311.pyc (3.96 KB)
+                |-- 📄 schemas.cpython-311.pyc (4.30 KB)
             |-- 📁 routers
                 |-- 📁 __pycache__
                     |-- 📄 orders.cpython-311.pyc (6.59 KB)
-                    |-- 📄 routes.cpython-311.pyc (3.33 KB)
+                    |-- 📄 routes.cpython-311.pyc (3.73 KB)
                     |-- 📄 vehicles.cpython-311.pyc (4.38 KB)
                 |-- 💻 orders.py (2.96 KB)
-                |-- 💻 routes.py (1.97 KB)
+                |-- 💻 routes.py (2.30 KB)
                 |-- 💻 vehicles.py (1.94 KB)
             |-- 📁 services
                 |-- 📁 __pycache__
-                    |-- 📄 assignment.cpython-311.pyc (2.35 KB)
-                    |-- 📄 distance.cpython-311.pyc (1.32 KB)
-                    |-- 📄 routing.cpython-311.pyc (3.06 KB)
-                    |-- 📄 time_windows.cpython-311.pyc (1.98 KB)
-                |-- 💻 assignment.py (1.16 KB)
-                |-- 💻 distance.py (463.00 B)
-                |-- 💻 routing.py (1.69 KB)
-                |-- 💻 time_windows.py (1.34 KB)
+                    |-- 📄 assignment.cpython-311.pyc (3.32 KB)
+                    |-- 📄 distance.cpython-311.pyc (6.13 KB)
+                    |-- 📄 routing.cpython-311.pyc (6.75 KB)
+                    |-- 📄 time_windows.cpython-311.pyc (2.04 KB)
+                    |-- 📄 vehicle_types.cpython-311.pyc (474.00 B)
+                |-- 💻 assignment.py (1.46 KB)
+                |-- 💻 distance.py (2.86 KB)
+                |-- 💻 routing.py (3.74 KB)
+                |-- 💻 time_windows.py (1.41 KB)
+                |-- 💻 vehicle_types.py (396.00 B)
             |-- 💻 database.py (569.00 B)
             |-- 💻 main.py (737.00 B)
-            |-- 💻 models.py (2.10 KB)
-            |-- 💻 schemas.py (1.19 KB)
+            |-- 💻 models.py (2.15 KB)
+            |-- 💻 schemas.py (1.27 KB)
             |-- 💻 seed.py (3.50 KB)
         |-- 📄 .env (76.00 B)
         |-- 📄 alembic.ini (3.58 KB)
-        |-- 📝 requirements.txt (155.00 B)
+        |-- 📝 requirements.txt (172.00 B)
     |-- 📁 frontend
         |-- 📁 node_modules
             |-- 📁 .bin
@@ -349,23 +358,29 @@ Report Mode: TREE
                 |-- 📄 vite.ps1 (789.00 B)
             |-- 📁 .vite
                 |-- 📁 deps
-                    |-- 📄 _metadata.json (1.24 KB)
-                    |-- 💻 chunk-I4MZPW7S.js (77.22 KB)
-                    |-- 📄 chunk-I4MZPW7S.js.map (122.68 KB)
-                    |-- 💻 chunk-XPR23Y44.js (906.24 KB)
-                    |-- 📄 chunk-XPR23Y44.js.map (1.42 MB)
+                    |-- 📄 _metadata.json (1.52 KB)
+                    |-- 💻 chunk-5WRI5ZAA.js (1.37 KB)
+                    |-- 📄 chunk-5WRI5ZAA.js.map (93.00 B)
+                    |-- 💻 chunk-BBSAS6O5.js (378.21 KB)
+                    |-- 📄 chunk-BBSAS6O5.js.map (655.14 KB)
+                    |-- 💻 chunk-CANBAPAS.js (75.96 KB)
+                    |-- 📄 chunk-CANBAPAS.js.map (122.66 KB)
+                    |-- 💻 chunk-TYILIMWK.js (906.28 KB)
+                    |-- 📄 chunk-TYILIMWK.js.map (1.42 MB)
+                    |-- 💻 leaflet.js (165.00 B)
+                    |-- 📄 leaflet.js.map (93.00 B)
                     |-- 📄 package.json (23.00 B)
-                    |-- 💻 react-dom.js (163.00 B)
+                    |-- 💻 react-dom.js (193.00 B)
                     |-- 📄 react-dom.js.map (93.00 B)
-                    |-- 💻 react-dom_client.js (986.00 B)
+                    |-- 💻 react-dom_client.js (1016.00 B)
                     |-- 📄 react-dom_client.js.map (1.18 KB)
-                    |-- 💻 react-leaflet.js (409.18 KB)
-                    |-- 📄 react-leaflet.js.map (711.64 KB)
-                    |-- 💻 react.js (121.00 B)
+                    |-- 💻 react-leaflet.js (31.06 KB)
+                    |-- 📄 react-leaflet.js.map (56.12 KB)
+                    |-- 💻 react.js (151.00 B)
                     |-- 📄 react.js.map (93.00 B)
-                    |-- 💻 react_jsx-dev-runtime.js (36.06 KB)
+                    |-- 💻 react_jsx-dev-runtime.js (36.10 KB)
                     |-- 📄 react_jsx-dev-runtime.js.map (59.65 KB)
-                    |-- 💻 react_jsx-runtime.js (36.39 KB)
+                    |-- 💻 react_jsx-runtime.js (36.43 KB)
                     |-- 📄 react_jsx-runtime.js.map (60.46 KB)
             |-- 📁 @babel
                 |-- 📁 code-frame
@@ -3004,13 +3019,13 @@ Report Mode: TREE
         |-- 📁 src
             |-- 📁 components
                 |-- 📁 MapView
-                    |-- 📄 MapView.jsx (4.36 KB)
+                    |-- 📄 MapView.jsx (7.68 KB)
                 |-- 📁 MetricsPanel
                     |-- 📄 MetricsPanel.jsx (3.36 KB)
                 |-- 📁 OrderForm
                     |-- 📄 OrderForm.jsx (3.45 KB)
                 |-- 📁 VehicleForm
-                    |-- 📄 VehicleForm.jsx (2.43 KB)
+                    |-- 📄 VehicleForm.jsx (2.94 KB)
             |-- 📄 App.jsx (2.50 KB)
             |-- 📄 main.jsx (217.00 B)
         |-- 💻 index.html (324.00 B)
@@ -3021,12 +3036,14 @@ Report Mode: TREE
         |-- 📝 push_to_github_20260811_114659.log (12.04 KB)
         |-- 📝 push_to_github_20260814_144937.log (6.46 KB)
         |-- 📝 push_to_github_20260814_153631.log (16.54 KB)
+        |-- 📝 push_to_github_20260814_154645.log (5.81 KB)
+        |-- 📝 scan_debug_1786711585.log (67.00 B)
     |-- 📁 tests
         |-- 📄 test_orders.csv (76.00 B)
     |-- 📄 .gitignore (296.00 B)
     |-- 📝 Assignment.txt (1.96 KB)
     |-- 📝 mapper_exclusions.txt (0.00 B)
-    |-- 📝 project_map_1786711585.txt (0.00 B)
+    |-- 📝 project_map_1786714007.txt (0.00 B)
     |-- 💻 project_mapper.py (21.34 KB)
     |-- 💻 push_to_github.py (11.05 KB)
     |-- 📝 README.md (4.43 KB)

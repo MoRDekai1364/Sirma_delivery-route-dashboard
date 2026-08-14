@@ -1,15 +1,15 @@
 from datetime import datetime, date, timedelta
-from services.distance import euclidean_distance
+from services.distance import real_distance
 
 VEHICLE_SPEED = 5.0
 
 
-def travel_minutes(x1, y1, x2, y2):
-    dist = euclidean_distance(x1, y1, x2, y2)
-    return dist / VEHICLE_SPEED
+def travel_minutes(x1, y1, x2, y2, speed_multiplier=1.0):
+    dist = real_distance(x1, y1, x2, y2)
+    return dist / (VEHICLE_SPEED * speed_multiplier)
 
 
-def enforce_time_windows(depot, ordered_stops, work_start):
+def enforce_time_windows(depot, ordered_stops, work_start, speed_multiplier=1.0):
     if not ordered_stops:
         return [], []
 
@@ -21,7 +21,7 @@ def enforce_time_windows(depot, ordered_stops, work_start):
     infeasible = []
 
     for order in ordered_stops:
-        travel = travel_minutes(current_x, current_y, order.x, order.y)
+        travel = travel_minutes(current_x, current_y, order.x, order.y, speed_multiplier)
         arrival = current_time + timedelta(minutes=travel)
 
         window_start = order.time_window_start
